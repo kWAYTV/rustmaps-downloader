@@ -107,22 +107,20 @@ func fetchMaps(apiKey, filterID string) ([]Map, error) {
 	allMaps = make([]Map, 0, 1000)
 
 	for {
-		select {
-		case <-time.After(rateLimit):
-			response, err := fetchPage(client, url, apiKey, page)
-			if err != nil {
-				return nil, err
-			}
-
-			allMaps = append(allMaps, response.Data...)
-			log.Infof("📥 Fetched page %d, got %d maps. Total so far: %d",
-				page, len(response.Data), len(allMaps))
-
-			if response.Meta.LastPage {
-				return allMaps, nil
-			}
-			page++
+		time.Sleep(rateLimit)
+		response, err := fetchPage(client, url, apiKey, page)
+		if err != nil {
+			return nil, err
 		}
+
+		allMaps = append(allMaps, response.Data...)
+		log.Infof("📥 Fetched page %d, got %d maps. Total so far: %d",
+			page, len(response.Data), len(allMaps))
+
+		if response.Meta.LastPage {
+			return allMaps, nil
+		}
+		page++
 	}
 }
 

@@ -11,10 +11,12 @@ A command-line interface tool for interacting with the RustMaps API, built in Go
 
 - CLI-based interface for easy interaction
 - Downloads maps based on filter ID
+- Updates server config files with map seeds
 - Handles pagination automatically
 - Implements rate limiting to respect API constraints
 - Creates backups of existing map data
 - Stores maps data in JSON format
+- Preserves YAML formatting and comments
 
 ## Prerequisites
 
@@ -110,10 +112,20 @@ rustmaps.exe download
 ./rustmaps download
 ```
 
-3. Get help for a specific command:
+3. Update server config with map seeds:
 
 ```bash
-./rustmaps download --help
+# Windows
+rustmaps.exe update-config maps/rust_maps_[filter_id].json config.yml
+
+# Linux
+./rustmaps update-config maps/rust_maps_[filter_id].json config.yml
+```
+
+4. Get help for a specific command:
+
+```bash
+./rustmaps [command] --help
 ```
 
 ## Output
@@ -125,6 +137,8 @@ The application creates a `maps` directory and saves the fetched data in JSON fo
 - Third run: `maps/rust_maps_[filter_id]_2.json`
   And so on...
 
+When using the `update-config` command, it will update the specified YAML config file while preserving all comments and formatting, only modifying the `world_seeds` section with the seeds from your maps JSON.
+
 ## Project Structure
 
 ```
@@ -134,7 +148,9 @@ rustmaps-downloader/
 │       ├── main.go              # CLI entry point
 │       └── commands/
 │           ├── root.go          # Root command definition
-│           └── download.go      # Download command implementation
+│           ├── download.go      # Download command implementation
+│           ├── update-config.go # Config update command implementation
+│           └── version.go       # Version command implementation
 ├── .env.example                 # Example environment file
 ├── .env                         # Your environment file (git-ignored)
 └── README.md                    # This file
