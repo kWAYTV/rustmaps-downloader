@@ -25,7 +25,15 @@ type WorldSeed struct {
 var updateConfigCmd = &cobra.Command{
 	Use:   "update-config <maps.json> <config.yml>",
 	Short: "Update config.yml with seeds from maps.json",
-	Args:  cobra.ExactArgs(2),
+	Long: `Update a Rust Wipe Bot config file with seeds from a downloaded maps JSON file.
+	
+Example usage:
+  # Using relative paths
+  rustmaps update-config maps/rust_maps_filter123.json config.yml
+
+  # Using absolute paths (wrap in quotes if paths contain spaces)
+  rustmaps update-config "C:\Path\To\maps.json" "C:\Path\To\config.yml"`,
+	Args: cobra.ExactArgs(2),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		mapsFile := args[0]
 		configFile := args[1]

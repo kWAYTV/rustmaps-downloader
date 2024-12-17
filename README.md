@@ -115,14 +115,22 @@ rustmaps.exe download
 3. Update Rust Wipe Bot config with map seeds:
 
 ```bash
-# Windows
-rustmaps.exe update-config maps/rust_maps_[filter_id].json config.yml
+# Windows - Using relative paths
+./rustmaps.exe update-config maps/rust_maps_[filter_id].json config.yml
 
-# Linux
+# Windows - Using absolute paths (wrap in quotes if paths contain spaces)
+./rustmaps.exe update-config "C:\Path\To\maps\rust_maps_[filter_id].json" "C:\Path\To\config.yml"
+
+# Linux - Using relative paths
 ./rustmaps update-config maps/rust_maps_[filter_id].json config.yml
+
+# Linux - Using absolute paths (wrap in quotes if paths contain spaces)
+./rustmaps update-config "/path/to/maps/rust_maps_[filter_id].json" "/path/to/config.yml"
 ```
 
 This command is designed to work with [Rust Wipe Bot](https://github.com/kWAYTV/rust-wipe-bot) configuration files. It will update the `world_seeds` section of your bot's config with the seeds from your downloaded maps while preserving all other settings, comments, and formatting.
+
+**Note**: When using absolute paths with spaces or special characters, make sure to wrap them in quotes.
 
 4. Get help for a specific command:
 
