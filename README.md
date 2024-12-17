@@ -57,9 +57,6 @@ scripts\build.bat
 
 # Show help
 scripts\help.bat
-
-# Run in development mode
-scripts\dev.bat download  # or any other command
 ```
 
 #### Linux
@@ -70,9 +67,6 @@ scripts\dev.bat download  # or any other command
 
 # Show help
 ./scripts/help.sh
-
-# Run in development mode
-./scripts/dev.sh download  # or any other command
 ```
 
 ### Using the Built CLI
@@ -103,14 +97,6 @@ rustmaps.exe download
 
 ```bash
 ./rustmaps download --help
-```
-
-### Development Usage
-
-During development, you can run commands directly without building:
-
-```bash
-go run cmd/rustmaps/main.go download
 ```
 
 ## Output
@@ -172,11 +158,7 @@ func init() {
 - Make sure Go is properly installed and in your system PATH
 - For dependency issues, run `go mod tidy`
 
-## License
-
-[MIT](LICENSE)
-
-### Shell Completion
+## Shell Completion
 
 The CLI supports shell autocompletion. To enable it:
 
@@ -215,3 +197,7 @@ source ~/.rustmaps-completion.zsh
 ```bash
 ./rustmaps completion fish > ~/.config/fish/completions/rustmaps.fish
 ```
+
+## License
+
+[MIT](LICENSE)
