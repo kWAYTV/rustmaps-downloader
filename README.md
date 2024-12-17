@@ -1,6 +1,6 @@
 # RustMaps CLI
 
-A command-line interface tool for interacting with the RustMaps API, built in Go.
+A command-line interface tool for interacting with the RustMaps API, built in Go. The `update-config` command is specifically designed to work with [Rust Wipe Bot](https://github.com/kWAYTV/rust-wipe-bot) configuration files.
 
 [![Build Status](https://github.com/kWAYTV/rustmaps-downloader/actions/workflows/build.yml/badge.svg)](https://github.com/kWAYTV/rustmaps-downloader/actions/workflows/build.yml)
 [![codecov](https://codecov.io/gh/kWAYTV/rustmaps-downloader/branch/main/graph/badge.svg)](https://codecov.io/gh/kWAYTV/rustmaps-downloader)
@@ -11,7 +11,7 @@ A command-line interface tool for interacting with the RustMaps API, built in Go
 
 - CLI-based interface for easy interaction
 - Downloads maps based on filter ID
-- Updates server config files with map seeds
+- Updates [Rust Wipe Bot](https://github.com/kWAYTV/rust-wipe-bot) config files with map seeds
 - Handles pagination automatically
 - Implements rate limiting to respect API constraints
 - Creates backups of existing map data
@@ -112,7 +112,7 @@ rustmaps.exe download
 ./rustmaps download
 ```
 
-3. Update server config with map seeds:
+3. Update Rust Wipe Bot config with map seeds:
 
 ```bash
 # Windows
@@ -121,6 +121,8 @@ rustmaps.exe update-config maps/rust_maps_[filter_id].json config.yml
 # Linux
 ./rustmaps update-config maps/rust_maps_[filter_id].json config.yml
 ```
+
+This command is designed to work with [Rust Wipe Bot](https://github.com/kWAYTV/rust-wipe-bot) configuration files. It will update the `world_seeds` section of your bot's config with the seeds from your downloaded maps while preserving all other settings, comments, and formatting.
 
 4. Get help for a specific command:
 
