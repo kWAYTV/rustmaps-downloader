@@ -2,6 +2,11 @@
 
 A command-line interface tool for interacting with the RustMaps API, built in Go.
 
+[![Build Status](https://github.com/kWAYTV/rustmaps-downloader/actions/workflows/build.yml/badge.svg)](https://github.com/kWAYTV/rustmaps-downloader/actions/workflows/build.yml)
+[![codecov](https://codecov.io/gh/kWAYTV/rustmaps-downloader/branch/main/graph/badge.svg)](https://codecov.io/gh/kWAYTV/rustmaps-downloader)
+[![Go Report Card](https://goreportcard.com/badge/github.com/kWAYTV/rustmaps-downloader)](https://goreportcard.com/report/github.com/kWAYTV/rustmaps-downloader)
+[![Latest Release](https://img.shields.io/github/v/release/kWAYTV/rustmaps-downloader?include_prereleases)](https://github.com/kWAYTV/rustmaps-downloader/releases/latest)
+
 ## Features
 
 - CLI-based interface for easy interaction
@@ -18,6 +23,18 @@ A command-line interface tool for interacting with the RustMaps API, built in Go
 - RustMaps filter ID
 
 ## Installation
+
+### Pre-built binaries
+
+Download the latest release for your platform from the [Releases page](https://github.com/kWAYTV/rustmaps-downloader/releases).
+
+Available platforms:
+
+- Windows (32/64-bit)
+- Linux (32/64-bit)
+- macOS (Intel/Apple Silicon)
+
+### Building from source
 
 1. Clone the repository:
 

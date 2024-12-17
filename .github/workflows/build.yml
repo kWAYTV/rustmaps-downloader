@@ -1,0 +1,77 @@
+name: Build, Test & Release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  build-test-release:
+    name: Build, Test & Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.21"
+          cache: true
+
+      - name: Get dependencies
+        run: go mod download
+
+      - name: Run go vet
+        run: go vet ./...
+
+      - name: Run tests
+        run: go test -v -race -coverprofile=coverage.txt -covermode=atomic ./...
+
+      - name: Generate version
+        id: version
+        run: |
+          DATE=$(date +'%Y%m%d')
+          HASH=$(git rev-parse --short HEAD)
+          VERSION="$DATE-$HASH"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Update version in code
+        run: |
+          sed -i "s/var Version = .*/var Version = \"${{ steps.version.outputs.version }}\"/" cmd/rustmaps/commands/version.go
+
+      - name: Build all platforms
+        run: |
+          platforms=("windows/amd64/.exe" "windows/386/.exe" "linux/amd64/" "linux/386/" "darwin/amd64/" "darwin/arm64/")
+          for platform in "${platforms[@]}"; do
+            IFS='/' read -r -a parts <<< "$platform"
+            os="${parts[0]}"
+            arch="${parts[1]}"
+            ext="${parts[2]}"
+            
+            echo "Building for $os/$arch"
+            GOOS=$os GOARCH=$arch go build -v -o "rustmaps$ext" -ldflags="-s -w" cmd/rustmaps/main.go
+            zip "rustmaps-$os-$arch.zip" "rustmaps$ext"
+            sha256sum "rustmaps-$os-$arch.zip" > "rustmaps-$os-$arch.zip.sha256"
+            rm "rustmaps$ext"
+          done
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./coverage.txt
+          flags: unittests
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: "v${{ steps.version.outputs.version }}"
+          name: "Release v${{ steps.version.outputs.version }}"
+          files: |
+            rustmaps-*.zip
+            rustmaps-*.zip.sha256
+          draft: false
+          prerelease: false
+          generate_release_notes: true
