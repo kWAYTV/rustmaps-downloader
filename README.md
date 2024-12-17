@@ -1,10 +1,11 @@
-# Rustmaps Fetcher
+# RustMaps CLI
 
-A Go application that fetches and stores Rust game maps data from the RustMaps API.
+A command-line interface tool for interacting with the RustMaps API, built in Go.
 
 ## Features
 
-- Fetches all available maps from RustMaps API using filter ID
+- CLI-based interface for easy interaction
+- Downloads maps based on filter ID
 - Handles pagination automatically
 - Implements rate limiting to respect API constraints
 - Creates backups of existing map data
@@ -12,11 +13,11 @@ A Go application that fetches and stores Rust game maps data from the RustMaps A
 
 ## Prerequisites
 
-- Go 1.23.2 or higher
+- Go 1.21 or higher
 - RustMaps API key
 - RustMaps filter ID
 
-## Setup
+## Installation
 
 1. Clone the repository:
 
@@ -25,23 +26,23 @@ git clone https://github.com/kWAYTV/rustmaps-downloader.git
 cd rustmaps-downloader
 ```
 
-2. Copy the example environment file and fill in your credentials:
+2. Make scripts executable (Linux only):
+
+```bash
+chmod +x scripts/*.sh
+```
+
+3. Copy the example environment file and fill in your credentials:
 
 ```bash
 cp .env.example .env
 ```
 
-3. Edit `.env` with your API credentials:
+4. Edit `.env` with your API credentials:
 
 ```plaintext
 RUSTMAPS_API_KEY=your_api_key_here
 RUSTMAPS_FILTER_ID=your_filter_id_here
-```
-
-4. Make the start script executable (Linux/MacOS only):
-
-```bash
-chmod +x scripts/start.sh
 ```
 
 ## Usage
@@ -50,40 +51,126 @@ chmod +x scripts/start.sh
 
 #### Windows
 
-Run the start script:
-
 ```bash
-scripts\start.bat
+# Build the CLI
+scripts\build.bat
+
+# Show help
+scripts\help.bat
+
+# Run in development mode
+scripts\dev.bat download  # or any other command
 ```
 
-#### Linux/MacOS
-
-Run the start script:
+#### Linux
 
 ```bash
-./scripts/start.sh
+# Build the CLI
+./scripts/build.sh
+
+# Show help
+./scripts/help.sh
+
+# Run in development mode
+./scripts/dev.sh download  # or any other command
 ```
 
-### Manual Run
+### Using the Built CLI
 
-Alternatively, you can run the application directly:
+After building with the build script:
+
+1. Get help and see available commands:
 
 ```bash
-go run main.go
+# Windows
+rustmaps.exe --help
+
+# Linux
+./rustmaps --help
+```
+
+2. Download maps using your filter:
+
+```bash
+# Windows
+rustmaps.exe download
+
+# Linux
+./rustmaps download
+```
+
+3. Get help for a specific command:
+
+```bash
+./rustmaps download --help
+```
+
+### Development Usage
+
+During development, you can run commands directly without building:
+
+```bash
+go run cmd/rustmaps/main.go download
 ```
 
 ## Output
 
-The application creates a `maps` directory and saves the fetched data in JSON format:
+The application creates a `maps` directory and saves the fetched data in JSON format. Files are named with an incrementing counter to avoid overwriting:
 
-- Main output file: `maps/rust_maps_[filter_id].json`
-- Backup files (if existing): `maps/rust_maps_[filter_id]_[timestamp].backup.json`
+- First run: `maps/rust_maps_[filter_id].json`
+- Second run: `maps/rust_maps_[filter_id]_1.json`
+- Third run: `maps/rust_maps_[filter_id]_2.json`
+  And so on...
+
+## Project Structure
+
+```
+rustmaps-downloader/
+├── cmd/
+│   └── rustmaps/
+│       ├── main.go              # CLI entry point
+│       └── commands/
+│           ├── root.go          # Root command definition
+│           └── download.go      # Download command implementation
+├── .env.example                 # Example environment file
+├── .env                         # Your environment file (git-ignored)
+└── README.md                    # This file
+```
+
+## Adding New Commands
+
+To add new functionality:
+
+1. Create a new file in `cmd/rustmaps/commands/`
+2. Define your command using cobra
+3. Register it in the `init()` function
+
+Example structure for a new command:
+
+```go
+package commands
+
+import "github.com/spf13/cobra"
+
+var newCmd = &cobra.Command{
+    Use:   "commandname",
+    Short: "Short description",
+    Long:  `Longer description`,
+    Run: func(cmd *cobra.Command, args []string) {
+        // Command implementation
+    },
+}
+
+func init() {
+    RootCmd.AddCommand(newCmd)
+}
+```
 
 ## Troubleshooting
 
-- If you get a permission denied error on Linux/MacOS, make sure you've run the chmod command from step 4
-- If you get an API error, verify your credentials in the `.env` file
+- If you get API errors, verify your credentials in the `.env` file
 - Make sure Go is properly installed and in your system PATH
+- For dependency issues, run `go mod tidy`
 
 ## License
 
