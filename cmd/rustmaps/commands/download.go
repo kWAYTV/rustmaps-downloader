@@ -3,13 +3,13 @@ package commands
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"path/filepath"
 	"time"
 
 	"github.com/joho/godotenv"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
@@ -19,6 +19,8 @@ const (
 	requestTimeout = 10 * time.Second
 	rateLimit      = time.Second
 )
+
+var log = logrus.New()
 
 type Response struct {
 	Meta Meta  `json:"meta"`
@@ -49,24 +51,30 @@ var downloadCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		apiKey, filterID, err := loadConfig()
 		if err != nil {
-			log.Fatalf("Failed to load configuration: %v", err)
+			log.Fatalf("❌ Failed to load configuration: %v", err)
 		}
 
+		log.Info("🚀 Starting map download...")
 		maps, err := fetchMaps(apiKey, filterID)
 		if err != nil {
-			log.Fatalf("Failed to fetch maps: %v", err)
+			log.Fatalf("❌ Failed to fetch maps: %v", err)
 		}
 
 		if err := saveMapsToFile(maps, filterID); err != nil {
-			log.Fatalf("Failed to save maps: %v", err)
+			log.Fatalf("❌ Failed to save maps: %v", err)
 		}
 
-		fmt.Printf("\nTotal maps collected: %d\n", len(maps))
-		fmt.Printf("Data saved to %s\n", fmt.Sprintf("rust_maps_%s.json", filterID))
+		log.Infof("✨ Total maps collected: %d", len(maps))
 	},
 }
 
 func init() {
+	// Configure logger
+	log.SetFormatter(&logrus.TextFormatter{
+		ForceColors:     true,
+		FullTimestamp:   true,
+		TimestampFormat: "15:04:05",
+	})
 	RootCmd.AddCommand(downloadCmd)
 }
 
@@ -82,6 +90,7 @@ func loadConfig() (string, string, error) {
 		return "", "", fmt.Errorf("RUSTMAPS_API_KEY and RUSTMAPS_FILTER_ID must be set in .env file")
 	}
 
+	log.Info("📁 Creating maps directory...")
 	if err := os.MkdirAll(outputDir, 0755); err != nil {
 		return "", "", fmt.Errorf("error creating maps directory: %w", err)
 	}
@@ -106,7 +115,7 @@ func fetchMaps(apiKey, filterID string) ([]Map, error) {
 			}
 
 			allMaps = append(allMaps, response.Data...)
-			fmt.Printf("Fetched page %d, got %d maps. Total so far: %d\n",
+			log.Infof("📥 Fetched page %d, got %d maps. Total so far: %d",
 				page, len(response.Data), len(allMaps))
 
 			if response.Meta.LastPage {
@@ -160,6 +169,7 @@ func saveMapsToFile(maps []Map, filterID string) error {
 		counter++
 	}
 
+	log.Info("💾 Saving maps to file...")
 	data, err := json.MarshalIndent(maps, "", "  ")
 	if err != nil {
 		return fmt.Errorf("error marshaling JSON: %w", err)
@@ -169,6 +179,6 @@ func saveMapsToFile(maps []Map, filterID string) error {
 		return fmt.Errorf("error writing file: %w", err)
 	}
 
-	fmt.Printf("Data saved to %s\n", filename)
+	log.Infof("✅ Data saved to %s", filename)
 	return nil
 }
