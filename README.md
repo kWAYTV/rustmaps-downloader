@@ -175,3 +175,43 @@ func init() {
 ## License
 
 [MIT](LICENSE)
+
+### Shell Completion
+
+The CLI supports shell autocompletion. To enable it:
+
+#### Bash
+
+```bash
+# Linux
+./rustmaps completion bash > /etc/bash_completion.d/rustmaps
+# or locally
+./rustmaps completion bash > ~/.rustmaps-completion.bash
+source ~/.rustmaps-completion.bash
+```
+
+#### PowerShell
+
+```powershell
+# Add to your PowerShell profile
+rustmaps.exe completion powershell | Out-String | Invoke-Expression
+# or temporarily
+rustmaps.exe completion powershell > rustmaps.ps1
+. .\rustmaps.ps1
+```
+
+#### Zsh
+
+```bash
+# Add to your zshrc
+./rustmaps completion zsh > "${fpath[1]}/_rustmaps"
+# or locally
+./rustmaps completion zsh > ~/.rustmaps-completion.zsh
+source ~/.rustmaps-completion.zsh
+```
+
+#### Fish
+
+```bash
+./rustmaps completion fish > ~/.config/fish/completions/rustmaps.fish
+```
