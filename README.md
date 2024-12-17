@@ -21,7 +21,7 @@ A Go application that fetches and stores Rust game maps data from the RustMaps A
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/rustmaps-downloader.git
+git clone https://github.com/kWAYTV/rustmaps-downloader.git
 cd rustmaps-downloader
 ```
 
@@ -87,4 +87,4 @@ The application creates a `maps` directory and saves the fetched data in JSON fo
 
 ## License
 
-MIT
+[MIT](LICENSE)
